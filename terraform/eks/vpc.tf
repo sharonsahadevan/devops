@@ -21,11 +21,6 @@ resource "random_string" "suffix" {
   special = false
 }
 
-data "aws_vpc_endpoint_service" "s3" {
-  service      = "s3"
-  service_type = "Gateway"
-}
-
 
 
 module "vpc" {
@@ -40,6 +35,9 @@ module "vpc" {
   enable_nat_gateway   = true
   single_nat_gateway   = true
   enable_dns_hostnames = true
+  enable_s3_endpoint   = true
+
+
 
   tags = {
     "kubernetes.io/cluster/${local.cluster_name}" = "shared"
@@ -57,11 +55,4 @@ module "vpc" {
 }
 
 
-resource "aws_vpc_endpoint" "s3-gateway-endpoint" {
-  vpc_id       = module.vpc.vpc_id
-  service_name = data.aws_vpc_endpoint_service.s3.service_name
-  tags = {
-    Name        = "S3 VPC Endpoint Gateway - ${local.Environment}"
-    Environment = local.Environment
-  }
-}
+
