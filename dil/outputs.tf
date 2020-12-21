@@ -43,3 +43,13 @@ output "keybase_secret_key_pgp_message" {
 }
 
 
+#EC2
+output "this_key_pair_key_name" {
+  description = "The key pair name."
+  value       = module.key-pair.this_key_pair_key_name
+}
+
+output "this_key_pair_key_pair_id" {
+  description = "The key pair ID."
+  value       = module.key-pair.this_key_pair_key_pair_id
+}

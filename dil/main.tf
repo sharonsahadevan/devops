@@ -9,5 +9,9 @@ module "vpc" {
 }
 
 module "iam" {
-  source = "./modules/iam/iam-user"
+  source = "./modules/iam"
+}
+
+module "ec2-instance" {
+  source = "./modules/ec2-instance"
 }

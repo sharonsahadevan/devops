@@ -29,9 +29,9 @@ module "iam_user2" {
 }
 
 
-module "iam_group_architects" {
-  source  = "terraform-aws-modules/iam/aws//examples/iam-group-with-policies"
-  version = "3.6.0"
+module "iam_group_architect" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-group-with-policies"
+  version = "~> 3.0"
 
   name = "architect"
 
@@ -46,14 +46,14 @@ module "iam_group_architects" {
 }
 
 
-module "iam_group_devops" {
-  source  = "terraform-aws-modules/iam/aws//examples/iam-group-with-policies"
-  version = "3.6.0"
+module "iam_group_with_devops" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-group-with-policies"
+  version = "~> 3.0"
 
   name = "devops"
 
   group_users = [
-    module.iam_user2.this_iam_user_name,
+    module.iam_user2.this_iam_user_name
   ]
 
   custom_group_policy_arns = [
@@ -61,9 +61,9 @@ module "iam_group_devops" {
   ]
 }
 
-module "iam_group_developers" {
-  source  = "terraform-aws-modules/iam/aws//examples/iam-group-with-policies"
-  version = "3.6.0"
+module "iam_group_with_developers" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-group-with-policies"
+  version = "~> 3.0"
 
   name = "developers"
 
@@ -79,14 +79,14 @@ module "iam_group_developers" {
   custom_group_policies = [
     {
       name   = "AllowS3Listing"
-      policy = data.aws_iam_policy_document.sample.json
+      policy = data.aws_iam_policy_document.dev-custom-policy.json
     },
   ]
 }
 
-module "iam_group_testers" {
-  source  = "terraform-aws-modules/iam/aws//examples/iam-group-with-policies"
-  version = "3.6.0"
+module "iam_group_with_testers" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-group-with-policies"
+  version = "~> 3.0"
 
   name = "testers"
 
@@ -103,7 +103,7 @@ module "iam_group_testers" {
   custom_group_policies = [
     {
       name   = "AllowS3Listing"
-      policy = data.aws_iam_policy_document.sample.json
+      policy = data.aws_iam_policy_document.tester-policy.json
     },
   ]
 }
@@ -120,7 +120,18 @@ data "aws_iam_policy_document" "developer" {
 
 
 
-data "aws_iam_policy_document" "tester" {
+data "aws_iam_policy_document" "tester-policy" {
+  statement {
+    actions = [
+      "s3:ListBuckets",
+    ]
+
+    resources = ["*"]
+  }
+}
+
+
+data "aws_iam_policy_document" "dev-custom-policy" {
   statement {
     actions = [
       "s3:ListBuckets",
