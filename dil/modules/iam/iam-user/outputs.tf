@@ -1,11 +1,3 @@
-#VPC
-output "vpc_public_subnets" {
-  description = "IDs of the VPC's public subnets"
-  value       = module.vpc.public_subnets
-}
-
-
-#IAM
 output "this_iam_user_name" {
   description = "The user's name"
   value       = module.iam_user.this_iam_user_name
@@ -41,5 +33,3 @@ output "keybase_secret_key_pgp_message" {
   description = "Encrypted access secret key"
   value       = module.iam_user.keybase_secret_key_pgp_message
 }
-
-

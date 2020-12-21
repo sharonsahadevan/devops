@@ -1,35 +1,131 @@
 provider "aws" {
-  region = "eu-west-1"
+  region = "eu-central-1"
 }
 
-#########################################
-# IAM user, login profile and access key
-#########################################
-module "iam_user" {
-  source = "../../modules/iam-user"
 
-  name          = "vasya.pupkin"
-  force_destroy = true
+module "iam_user1" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-user"
+  version = "~> 3.0"
 
-  # User "test" has uploaded his public key here - https://keybase.io/test/pgp_keys.asc
-  pgp_key = "keybase:test"
+  name = "nilesh.test"
 
-  password_reset_required = false
+  create_iam_user_login_profile = true
+  create_iam_access_key         = true
+  force_destroy                 = true
+  pgp_key                       = "keybase:test"
+  password_reset_required       = true
 
-  # SSH public key
-  upload_iam_user_ssh_key = true
-
-  ssh_public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA0sUjdTEcOWYgQ7ESnHsSkvPUO2tEvZxxQHUZYh9j6BPZgfn13iYhfAP2cfZznzrV+2VMamMtfiAiWR39LKo/bMN932HOp2Qx2la14IbiZ91666FD+yZ4+vhR2IVhZMe4D+g8FmhCfw1+zZhgl8vQBgsRZIcYqpYux59FcPv0lP1EhYahoRsUt1SEU2Gj+jvgyZpe15lnWk2VzfIpIsZ++AeUqyHoJHV0RVOK4MLRssqGHye6XkA3A+dMm2Mjgi8hxoL5uuwtkIsAll0kSfL5O2G26nsxm/Fpcl+SKSO4gs01d9V83xiOwviyOxmoXzwKy4qaUGtgq1hWncDNIVG/aQ=="
 }
 
-###################################################################
-# IAM user without pgp_key (IAM access secret will be unencrypted)
-###################################################################
+
 module "iam_user2" {
-  source = "../../modules/iam-user"
+  source  = "terraform-aws-modules/iam/aws//modules/iam-user"
+  version = "~> 3.0"
 
-  name = "vasya.pupkin4"
+  name = "alexey.test"
 
   create_iam_user_login_profile = false
   create_iam_access_key         = true
+}
+
+
+module "iam_group_architects" {
+  source  = "terraform-aws-modules/iam/aws//examples/iam-group-with-policies"
+  version = "3.6.0"
+
+  name = "architect"
+
+  group_users = [
+    module.iam_user1.this_iam_user_name,
+
+  ]
+
+  custom_group_policy_arns = [
+    "arn:aws:iam::aws:policy/AdministratorAccess",
+  ]
+}
+
+
+module "iam_group_devops" {
+  source  = "terraform-aws-modules/iam/aws//examples/iam-group-with-policies"
+  version = "3.6.0"
+
+  name = "devops"
+
+  group_users = [
+    module.iam_user2.this_iam_user_name,
+  ]
+
+  custom_group_policy_arns = [
+    "arn:aws:iam::aws:policy/AdministratorAccess",
+  ]
+}
+
+module "iam_group_developers" {
+  source  = "terraform-aws-modules/iam/aws//examples/iam-group-with-policies"
+  version = "3.6.0"
+
+  name = "developers"
+
+  group_users = [
+
+  ]
+
+  # Need to be updated
+  custom_group_policy_arns = [
+    "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess",
+  ]
+
+  custom_group_policies = [
+    {
+      name   = "AllowS3Listing"
+      policy = data.aws_iam_policy_document.sample.json
+    },
+  ]
+}
+
+module "iam_group_testers" {
+  source  = "terraform-aws-modules/iam/aws//examples/iam-group-with-policies"
+  version = "3.6.0"
+
+  name = "testers"
+
+  group_users = [
+
+  ]
+
+  # Need to be updated
+
+  custom_group_policy_arns = [
+    "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess",
+  ]
+
+  custom_group_policies = [
+    {
+      name   = "AllowS3Listing"
+      policy = data.aws_iam_policy_document.sample.json
+    },
+  ]
+}
+
+data "aws_iam_policy_document" "developer" {
+  statement {
+    actions = [
+      "s3:ListBuckets",
+    ]
+
+    resources = ["*"]
+  }
+}
+
+
+
+data "aws_iam_policy_document" "tester" {
+  statement {
+    actions = [
+      "s3:ListBuckets",
+    ]
+
+    resources = ["*"]
+  }
 }
