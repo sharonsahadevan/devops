@@ -1,4 +1,37 @@
 
+locals {
+  user_data = <<EOF
+#!/bin/bash
+sudo apt-get update && sudo apt-get install -y apt-transport-https gnupg2 curl unzip
+
+curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
+
+chmod +x ./kubectl
+
+sudo mv ./kubectl /usr/local/bin/kubectl
+
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+
+EOF
+}
+
+module "security_group" {
+  source  = "terraform-aws-modules/security-group/aws"
+  version = "~> 3.0"
+
+  name        = "dil-bastion-dev-sg"
+  description = "Security group for DIL dev bastion instance"
+  vpc_id      = module.vpc.vpc_id
+
+  ingress_cidr_blocks = var.ingress_cidr_blocks
+  ingress_rules       = var.ingress_rules
+  egress_rules        = var.egress_rules
+}
+
+
+
 module "ec2" {
   source  = "terraform-aws-modules/ec2-instance/aws"
   version = "2.12.0"
@@ -8,10 +41,12 @@ module "ec2" {
 
   ami                         = var.instance_ami
   instance_type               = "t2.micro"
-  vpc_security_group_ids      = [module.vpc.default_security_group_id]
+  vpc_security_group_ids      = [module.security_group.this_security_group_id]
   subnet_id                   = module.vpc.public_subnets[0]
   associate_public_ip_address = true
   key_name                    = var.key_name
+  user_data_base64            = base64encode(local.user_data)
+  #iam_instance_profile        = var.instance_profile_name
 
   root_block_device = [
     {
