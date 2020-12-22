@@ -1,4 +1,4 @@
-module "ec2_instance" {
+module "ec2" {
   source  = "terraform-aws-modules/ec2-instance/aws"
   version = "2.12.0"
 
@@ -10,7 +10,7 @@ module "ec2_instance" {
   vpc_security_group_ids      = [module.vpc.default_security_group_id]
   subnet_id                   = module.vpc.public_subnets[0]
   associate_public_ip_address = true
-  root_block_device           = { volume_type = "gp2", volume_size = 25 }
+
   ebs_block_device = [
     {
       device_name = "/dev/sdf"
