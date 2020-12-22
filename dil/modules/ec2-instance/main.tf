@@ -1,3 +1,4 @@
+
 module "ec2" {
   source  = "terraform-aws-modules/ec2-instance/aws"
   version = "2.12.0"
@@ -10,6 +11,15 @@ module "ec2" {
   vpc_security_group_ids      = [module.vpc.default_security_group_id]
   subnet_id                   = module.vpc.public_subnets[0]
   associate_public_ip_address = true
+  key_name                    = var.key_name
+
+  root_block_device = [
+    {
+      volume_type = "gp2"
+      volume_size = 20
+    },
+  ]
+
 
   ebs_block_device = [
     {
@@ -20,7 +30,7 @@ module "ec2" {
 
     }
   ]
-  key_name = module.key-pair.this_key_pair_key_name
+
 
   tags = {
     Terraform   = "true"
@@ -28,24 +38,7 @@ module "ec2" {
   }
 }
 
-resource "aws_volume_attachment" "this_ec2" {
-  count = var.instances_number
-
-  device_name = "/dev/sdh"
-  volume_id   = aws_ebs_volume.this[count.index].id
-  instance_id = module.ec2.id[count.index]
-}
-
-resource "aws_ebs_volume" "this" {
-  count = var.instances_number
-
-  availability_zone = module.ec2.availability_zone[count.index]
-  size              = 1
-}
-
-
-module "key-pair" {
-  source   = "terraform-aws-modules/key-pair/aws"
-  version  = "0.6.0"
-  key_name = "dil-bastion-key-dev"
+resource "aws_eip" "this" {
+  vpc      = true
+  instance = module.ec2.id[0]
 }
