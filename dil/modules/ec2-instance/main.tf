@@ -17,7 +17,7 @@ sudo ./aws/install
 EOF
 }
 
-module "security_group" {
+module "bastion_security_group" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "~> 3.0"
 
@@ -32,6 +32,9 @@ module "security_group" {
 
 
 
+
+
+
 module "ec2" {
   source  = "terraform-aws-modules/ec2-instance/aws"
   version = "2.12.0"
@@ -41,7 +44,7 @@ module "ec2" {
 
   ami                         = var.instance_ami
   instance_type               = "t2.micro"
-  vpc_security_group_ids      = [module.security_group.this_security_group_id]
+  vpc_security_group_ids      = [module.bastion_security_group.this_security_group_id]
   subnet_id                   = module.vpc.public_subnets[0]
   associate_public_ip_address = true
   key_name                    = var.key_name
