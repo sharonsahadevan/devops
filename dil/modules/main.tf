@@ -2,14 +2,14 @@ provider "aws" {
   region = "eu-central-1"
 }
 
-# module "iam" {
-#   source = "."
-# }
+module "iam" {
+  source = "./iam"
+}
 
-# module "ec2" {
-#   source = "."
+module "ec2" {
+  source = "./ec2-instance"
 
-# }
+}
 
 module "s3-bucket" {
   source = "./s3-bucket"
@@ -17,11 +17,4 @@ module "s3-bucket" {
 }
 
 
-# locals {
-#   bucket_id = modules.s3-bucket.this_s3_bucket_id
-# }
 
-output "this_s3_bucket_id" {
-
-  value = module.s3-bucket.this_s3_bucket_id
-}

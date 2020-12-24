@@ -34,7 +34,6 @@ module "bastion_security_group" {
 
 
 
-
 module "ec2" {
   source  = "terraform-aws-modules/ec2-instance/aws"
   version = "2.12.0"
@@ -49,7 +48,7 @@ module "ec2" {
   associate_public_ip_address = true
   key_name                    = var.key_name
   user_data_base64            = base64encode(local.user_data)
-  #iam_instance_profile        = var.instance_profile_name
+  iam_instance_profile        = aws_iam_instance_profile.bastion_host_instance_profile.name
 
   root_block_device = [
     {
@@ -76,7 +75,7 @@ module "ec2" {
   }
 }
 
-resource "aws_eip" "this" {
+resource "aws_eip" "ip" {
   vpc      = true
   instance = module.ec2.id[0]
 }
