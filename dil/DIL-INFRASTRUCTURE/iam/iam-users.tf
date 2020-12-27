@@ -1,7 +1,7 @@
 module "iam_admin_user1" {
   source        = "terraform-aws-modules/iam/aws//modules/iam-user"
   version       = "~> 3.0"
-  name          = "nilesh"
+  name          = var.admin_user1
   force_destroy = true
   pgp_key       = "keybase:nilesh"
 }
