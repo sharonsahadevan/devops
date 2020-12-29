@@ -4,6 +4,8 @@ kind: ServiceAccount
 metadata:
   name: traefik-ingress-controller
   namespace: kube-system
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::289714961096:role/traefik-ingress-controller
 ---
 kind: Deployment
 apiVersion: apps/v1

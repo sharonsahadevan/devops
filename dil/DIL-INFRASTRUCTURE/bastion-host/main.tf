@@ -12,7 +12,14 @@ sudo mv ./kubectl /usr/local/bin/kubectl && \
 
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
 unzip awscliv2.zip && \
-sudo ./aws/install
+sudo ./aws/install && \
+
+curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp && \
+sudo mv /tmp/eksctl /usr/local/bin && \
+
+curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add - && \
+sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main" && \
+sudo apt-get update && sudo apt-get install terraform
 
 EOF
 }
