@@ -4,22 +4,25 @@ locals {
 #!/bin/bash
 sudo apt-get update && sudo apt-get install -y apt-transport-https gnupg2 curl unzip && \
 
-curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl" && \
+sudo curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl" && \
 
-chmod +x ./kubectl && \ 
+sudo chmod +x ./kubectl && \ 
 
 sudo mv ./kubectl /usr/local/bin/kubectl && \
 
-curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
-unzip awscliv2.zip && \
+sudo curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
+sudo unzip awscliv2.zip && \
 sudo ./aws/install && \
 
-curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp && \
+sudo curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | sudo tar xz -C /tmp && \
 sudo mv /tmp/eksctl /usr/local/bin && \
 
-curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add - && \
+sudo curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add - && \
 sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main" && \
-sudo apt-get update && sudo apt-get install terraform
+sudo apt-get update && sudo apt-get install terraform && \
+
+sudo curl -sSL https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+
 
 EOF
 }
