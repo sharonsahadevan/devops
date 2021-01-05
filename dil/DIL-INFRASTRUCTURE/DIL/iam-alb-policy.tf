@@ -1,5 +1,5 @@
 data "template_file" "alb_iam_policy_template" {
-  template = file("alb-iam-policy-template.json.tpl")
+  template = file("./policy-templates/alb-iam-policy-template.json.tpl")
 }
 
 module "alb_iam_policy" {

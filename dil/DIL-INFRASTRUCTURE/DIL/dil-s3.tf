@@ -1,14 +1,3 @@
-
-provider "aws" {
-  region = "eu-central-1"
-}
-
-locals {
-  dil_data_bucket            = "dil-demo-22323"
-  dil_terraform_state_bucket = "dil-demo2-7262"
-}
-
-
 data "aws_iam_policy_document" "dil_data_bucket_policy" {
   statement {
     actions = [
@@ -16,7 +5,7 @@ data "aws_iam_policy_document" "dil_data_bucket_policy" {
     ]
     effect = "Deny"
     resources = [
-      "arn:aws:s3:::${local.dil_data_bucket}",
+      "arn:aws:s3:::${var.dil_data_bucket}",
     ]
 
     condition {
@@ -38,7 +27,7 @@ data "aws_iam_policy_document" "dil_data_bucket_policy" {
 module "dil_data_bucket" {
   source                  = "terraform-aws-modules/s3-bucket/aws"
   version                 = "1.17.0"
-  bucket                  = local.dil_data_bucket
+  bucket                  = var.dil_data_bucket
   block_public_acls       = true
   block_public_policy     = true
   ignore_public_acls      = true
@@ -53,24 +42,6 @@ module "dil_data_bucket" {
   }
 }
 
-module "dil_terraform_state_bucket" {
-  source                  = "terraform-aws-modules/s3-bucket/aws"
-  version                 = "1.17.0"
-  bucket                  = "dil-s3-test-bucket-terraform"
-  block_public_acls       = true
-  block_public_policy     = true
-  ignore_public_acls      = true
-  restrict_public_buckets = true
-  force_destroy           = true
-
-  policy = data.aws_iam_policy_document.dil_data_bucket_policy.json
-
-  tags = {
-    "Terraform"   = "true",
-    "Environment" = "dev"
-
-  }
-}
 
 
 

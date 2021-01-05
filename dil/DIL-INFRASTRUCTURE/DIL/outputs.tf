@@ -44,3 +44,20 @@ output "cluster_worker_role" {
   value       = module.eks.worker_iam_role_name
 
 }
+
+
+output "dil_data_bucket" {
+  description = " The name of the bucket."
+  value       = module.dil_data_bucket.this_s3_bucket_id
+}
+
+
+output "vpc_s3_endpoint" {
+
+  value = module.vpc.vpc_endpoint_s3_id
+}
+
+
+output "ip" {
+  value = aws_eip.ip.public_ip
+}

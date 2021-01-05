@@ -1,3 +1,28 @@
+variable "account_id" {
+  description = "account ID"
+  type        = number
+}
+
+variable "region" {
+  default     = "eu-central-1"
+  description = "AWS region"
+}
+
+variable "profile-dt" {
+  type    = string
+  default = "dt"
+
+}
+
+
+variable "dil_data_bucket" {
+  type    = string
+  default = "dil-dev-data-bucket"
+}
+
+########################################
+#Bastion Host
+########################################
 variable "instances_number" {
   description = "Number of instances"
   type        = number
@@ -47,13 +72,4 @@ variable "instance_profile_name" {
 
 }
 
-variable "region" {
-  type    = string
-  default = "eu-central-1"
 
-}
-
-variable "account_id" {
-  description = "account ID"
-  type        = number
-}
