@@ -8,23 +8,23 @@ module "eks" {
   map_roles = [
     {
       rolearn  = module.iam_dev-assumable-roles.readonly_iam_role_arn
-      username = module.iam_dev-assumable-roles.readonly_iam_role_name
+      username = "dev-user"
       groups   = []
     },
     {
       rolearn  = module.iam_test-assumable-roles.readonly_iam_role_arn
-      username = module.iam_test-assumable-roles.readonly_iam_role_name
+      username = "test-user"
       groups   = []
     },
     {
       rolearn  = module.iam_architect-assumable-roles.readonly_iam_role_arn
-      username = module.iam_architect-assumable-roles.readonly_iam_role_name
+      username = "architect-user"
       groups   = []
 
     },
     {
       rolearn  = module.iam_devops-assumable-roles.readonly_iam_role_arn
-      username = module.iam_devops-assumable-roles.readonly_iam_role_name
+      username = "devops-user"
       groups   = ["system:masters"]
     },
   ]

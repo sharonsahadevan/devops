@@ -72,4 +72,8 @@ variable "instance_profile_name" {
 
 }
 
+variable "profile" {
+  type    = string
+  default = "dt"
 
+}
