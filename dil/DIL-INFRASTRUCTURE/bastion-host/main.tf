@@ -58,7 +58,8 @@ module "ec2" {
   associate_public_ip_address = true
   key_name                    = var.key_name
   user_data_base64            = base64encode(local.user_data)
-  iam_instance_profile        = aws_iam_instance_profile.bastion_host_instance_profile.name
+  #iam_instance_profile        = aws_iam_instance_profile.bastion_host_instance_profile.name
+  iam_instance_profile = module.iam_iam-assumable-role.this_iam_instance_profile_name
 
   root_block_device = [
     {

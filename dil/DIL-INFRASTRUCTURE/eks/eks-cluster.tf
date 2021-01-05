@@ -2,7 +2,7 @@
 module "eks" {
   source          = "terraform-aws-modules/eks/aws"
   cluster_name    = local.cluster_name
-  cluster_version = "1.17"
+  cluster_version = "1.18"
   subnets         = module.vpc.private_subnets
   enable_irsa     = true
   map_roles = [
@@ -37,13 +37,13 @@ module "eks" {
   worker_groups = [
     {
       name                          = "worker-group-1"
-      instance_type                 = "t2.micro"
+      instance_type                 = "m4.2xlarge"
       asg_desired_capacity          = 1
       additional_security_group_ids = [aws_security_group.worker_group_mgmt_one.id]
     },
     {
       name                          = "worker-group-2"
-      instance_type                 = "t2.micro"
+      instance_type                 = "m4.2xlarge"
       additional_security_group_ids = [aws_security_group.worker_group_mgmt_two.id]
       asg_desired_capacity          = 1
     },

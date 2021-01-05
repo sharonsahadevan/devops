@@ -13,7 +13,7 @@ variable "instance_ami" {
 variable "key_name" {
   description = "key name"
   type        = string
-  default     = "test"
+  default     = "dil-dev-bastion"
 }
 
 variable "ingress_cidr_blocks" {
@@ -47,4 +47,13 @@ variable "instance_profile_name" {
 
 }
 
+variable "region" {
+  type    = string
+  default = "eu-central-1"
 
+}
+
+variable "account_id" {
+  description = "account ID"
+  type        = number
+}

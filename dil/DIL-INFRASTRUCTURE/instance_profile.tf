@@ -24,7 +24,7 @@ resource "aws_iam_policy" "policy" {
 
   policy = <<EOF
 {
-    "Version": "2012-10-17",
+  "Version": "2012-10-17",
     "Statement": [
         {
             "Effect": "Allow",
