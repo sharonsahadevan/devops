@@ -12,7 +12,7 @@
 module "alb_ingress_iam-assumable-role-with-oidc" {
   source                = "terraform-aws-modules/iam/aws//modules/iam-assumable-role-with-oidc"
   version               = "3.6.0"
-  aws_account_id        = var.aws_account_id
+  aws_account_id        = var.account_id
   role_name             = "alb-ingress-controller"
   create_role           = true
   force_detach_policies = true

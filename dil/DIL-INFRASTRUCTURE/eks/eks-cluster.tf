@@ -5,7 +5,29 @@ module "eks" {
   cluster_version = "1.17"
   subnets         = module.vpc.private_subnets
   enable_irsa     = true
+  map_roles = [
+    {
+      rolearn  = module.iam_dev-assumable-roles.readonly_iam_role_arn
+      username = module.iam_dev-assumable-roles.readonly_iam_role_name
+      groups   = []
+    },
+    {
+      rolearn  = module.iam_test-assumable-roles.readonly_iam_role_arn
+      username = module.iam_test-assumable-roles.readonly_iam_role_name
+      groups   = []
+    },
+    {
+      rolearn  = module.iam_architect-assumable-roles.readonly_iam_role_arn
+      username = module.iam_architect-assumable-roles.readonly_iam_role_name
+      groups   = []
 
+    },
+    {
+      rolearn  = module.iam_devops-assumable-roles.readonly_iam_role_arn
+      username = module.iam_devops-assumable-roles.readonly_iam_role_name
+      groups   = ["system:masters"]
+    },
+  ]
   tags = {
     Environment = "development"
   }
@@ -16,7 +38,7 @@ module "eks" {
     {
       name                          = "worker-group-1"
       instance_type                 = "t2.micro"
-      asg_desired_capacity          = 2
+      asg_desired_capacity          = 1
       additional_security_group_ids = [aws_security_group.worker_group_mgmt_one.id]
     },
     {
