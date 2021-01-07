@@ -2,7 +2,7 @@
 
 ## How to execute the modules
 
-Go to relevant module directory and execute following commands
+Execute following commands to deploy the resources
 
 ```
 terraform init
@@ -20,6 +20,16 @@ unzip awscliv2.zip
 sudo ./aws/install
 ```
 
+You need to configure 2 AWS profiles to work with MFA.
+
+### First create  default AWS profile
+```
+aws configure
+```
+Specify the access ID , Secret Key and the default region which is "eu-central-1"
+
+### Next create another profile to use the MFA session credentials
+
 ```
 aws configure --profile <any name> #ie: dt_deployment
 ```
@@ -27,17 +37,27 @@ Promp will ask for your accesskey,secret ID,default region and the output you pr
 Region is "eu-central-1"
 
 
-
 ### Generate session token
 
-Following command will give you the access ID,Secret Key and the Session token. During the execution you need to use your MFA device auto genrated code as <token>
+Following command will give you the access ID,Secret Key and the Session token. During the execution you need to use your MFA device auto genrated code as <token>. If you want to keep the session valid for 1 days then use the duration 86400 instead of
+3600
 
 ```
 aws sts get-session-token --duration 3600 --serial-number arn:aws:iam::<aws account ID>:mfa/<username> --token-code <token>
 ```
 
+After generating the credentials, use the access ID, secret key and aws session token to replace the secondary profile you
+created.
+
+ie:
+aws_access_key_id = "access id"
+aws_secret_access_key = "secret access key"
+aws_session_token = "token
+
+
 ## How to authenticate with EKS using Kubectl
 
+After you updated your profile with generated credentials, you will be able to access EKS cluster from AWS CLI
 ```
 aws eks --region eu-central-1 update-kubeconfig --name dil-eu-central-1-eks-dev <profile name>
 ```

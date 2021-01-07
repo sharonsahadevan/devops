@@ -1,8 +1,4 @@
-provider "aws" {
-	access_key = "AKIAT4V4PDOYWX7AGW7J"
-	secret_key = "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"
-	region = "us-west-2"
-}
+
 
 module "iam" {
   source = "./modules/iam"
@@ -11,7 +7,7 @@ module "iam" {
 module "security" {
   source              = "./modules/security"
   name                = var.name
-  vpc_id              = var.vpc_id
+  vpc_id              = module.vpc.vpc_id
   ingress_cidr_blocks = var.ingress_cidr_blocks
 }
 
@@ -20,7 +16,7 @@ module "emr" {
   name                      = var.name
   release_label             = var.release_label
   applications              = var.applications
-  subnet_id                 = var.subnet_id
+  subnet_id                 = module.vpc.public_subnets[0]
   key_name                  = var.key_name
   master_instance_type      = var.master_instance_type
   master_ebs_size           = var.master_ebs_size

@@ -1,17 +1,8 @@
-variable "region" {
-  default     = "eu-central-1"
-  description = "AWS region"
-}
-
-provider "aws" {
-  version = ">= 2.28.1"
-  region  = "eu-central-1"
-}
 
 data "aws_availability_zones" "available" {}
 
 locals {
-  cluster_name = "dil-eu-central-1-eks-dev"
+  cluster_name = "dil-eu-central-1-emr_test"
 }
 
 resource "random_string" "suffix" {

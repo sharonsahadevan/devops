@@ -1,35 +1,35 @@
 resource "aws_security_group" "emr_master" {
-  name                   = "${var.name} - EMR-master"
+  name                   = "emr-master-sg"
   description            = "Security group for EMR master."
-  vpc_id                 = var.vpc_id
+  vpc_id                 = module.vpc.vpc_id
   revoke_rules_on_delete = true
 
   ingress {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = [var.ingress_cidr_blocks]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   ingress {
     from_port   = 4040
     to_port     = 4040
     protocol    = "tcp"
-    cidr_blocks = [var.ingress_cidr_blocks]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   ingress {
     from_port   = 8888
     to_port     = 8888
     protocol    = "tcp"
-    cidr_blocks = [var.ingress_cidr_blocks]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   ingress {
     from_port   = 20888
     to_port     = 20888
     protocol    = "tcp"
-    cidr_blocks = [var.ingress_cidr_blocks]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
@@ -45,16 +45,16 @@ resource "aws_security_group" "emr_master" {
 }
 
 resource "aws_security_group" "emr_slave" {
-  name                   = "${var.name} - EMR-slave"
+  name                   = "emr-slave-sg"
   description            = "Security group for EMR slave."
-  vpc_id                 = var.vpc_id
+  vpc_id                 = module.vpc.vpc_id
   revoke_rules_on_delete = true
 
   ingress {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = [var.ingress_cidr_blocks]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
@@ -70,16 +70,16 @@ resource "aws_security_group" "emr_slave" {
 }
 
 resource "aws_security_group" "emr_service_access_security_group" {
-  name                   = "${var.name} - service_access_security_group"
+  name                   = "emr-service-access-sg"
   description            = "Security group for EMR slave."
-  vpc_id                 = var.vpc_id
+  vpc_id                 = module.vpc.vpc_id
   revoke_rules_on_delete = true
 
   ingress {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = [var.ingress_cidr_blocks]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {

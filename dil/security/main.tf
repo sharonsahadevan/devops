@@ -1,5 +1,5 @@
 resource "aws_security_group" "emr_master" {
-  name                   = "${var.name} - EMR-master"
+  name                   = "EMR-master-SG"
   description            = "Security group for EMR master."
   vpc_id                 = var.vpc_id
   revoke_rules_on_delete = true
@@ -54,7 +54,7 @@ resource "aws_security_group" "emr_slave" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = [var.ingress_cidr_blocks]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
@@ -69,7 +69,7 @@ resource "aws_security_group" "emr_slave" {
   }
 }
 
-resource "aws_security_group" "emr_service_access_security_group" {
+resource "service_access_security_group" "emr_service_access_security_group" {
   name                   = "${var.name} - service_access_security_group"
   description            = "Security group for EMR slave."
   vpc_id                 = var.vpc_id
