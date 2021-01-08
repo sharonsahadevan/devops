@@ -28,7 +28,7 @@ module "emr" {
 
   # EMR cluster
   enable_emr_cluster        = true
-  emr_cluster_name          = "emr_test_cluster"
+  emr_cluster_name          = "emr_testing_cluster"
   emr_cluster_release_label = "emr-5.32.0"
   emr_cluster_service_role  = module.iam.emr_service_role
 
@@ -48,16 +48,13 @@ module "emr" {
     # instance_profile                    = "arn:aws:iam::167127734783:instance-profile/emr-service-role"
     # You cannot specify a ServiceAccessSecurityGroup for a cluster launched in public subnet
     # If you want to use private subnet:
-    #subnet_id                         = "sg-6u99fdsf"
-    subnet_id = module.vpc.private_subnets[0]
-    # emr_managed_master_security_group = module.security.emr_master_security_group
-    # emr_managed_slave_security_group  = module.security.emr_slave_security_group
-    # service_access_security_group     = module.security.emr_service_access_security_group
-    # instance_profile                  = module.iam.emr_ec2_instance_profile
+
+    subnet_id                         = module.vpc.private_subnets[0]
+    instance_profile                  = module.iam.emr_ec2_instance_profile
     emr_managed_master_security_group = aws_security_group.emr_master.id
     emr_managed_slave_security_group  = aws_security_group.emr_slave.id
     service_access_security_group     = aws_security_group.emr_service_access_security_group.id
-    instance_profile                  = module.iam.emr_ec2_instance_profile
+
   }]
 
   emr_cluster_master_instance_group_ebs_config = [{
@@ -80,21 +77,9 @@ module "emr" {
     ebs_config_volumes_per_instance = 1
   }]
 
-  # it's not working when uses private sabnet;
-  # The VPC/subnet configuration was invalid: Your cluster needs access to SQS to enable debugging but subnet does not have route to access SQS. Learn more about private subnet configurations: https://docs.aws.amazon.com/ElasticMapReduce/latest/ManagementGuide/emr-plan-vpc-subnet.html
-  #emr_cluster_bootstrap_action                        = [{
-  #    path = "s3://elasticmapreduce/bootstrap-actions/run-if"
-  #    name = "runif"
-  #    args = ["instance.isMaster=true", "echo running on master node"]
-  #}]
 
-  #emr_cluster_step                                    = [{
-  #    name                = "Setup Hadoop Debugging"
-  #    action_on_failure   = "TERMINATE_CLUSTER"
-  #
-  #    hadoop_jar  = "command-runner.jar"
-  #    hadoop_args = ["state-pusher-script"]
-  #}]
+
+
 
   # EMR instance group
   enable_emr_instance_group         = true

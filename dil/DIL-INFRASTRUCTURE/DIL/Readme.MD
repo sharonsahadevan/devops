@@ -68,6 +68,21 @@ aws eks --region eu-central-1 update-kubeconfig --name dil-eu-central-1-eks-dev 
 kubectl edit -n kube-system configmap/aws-auth
 ```
 
+# Kubernetes resource deployment
+## Configure RBAC
+Necessary manigest files are available under kubernetes/user-rbac
+execute the following command in alb directory
+```
+kubectl create -f .
+```
+
+## Deploy ALB ingress controller
+Necessary manigest files are available under kubernetes/alb
+execute the following command in alb directory
+```
+kubectl create -f .
+```
+
 ## How to view ALB ingress logs
 ```
 kubectl logs -f $(kubectl get pod -n kube-system | egrep -o 'alb-ingress-controller-[A-Za-z0-9-]+') -n kube-system

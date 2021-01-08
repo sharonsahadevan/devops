@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: web
-  namespace: default
+  name: dev-web
+  namespace: dev
 spec:
   selector:
     matchLabels:
-      run: web
+      run: dev-web
   template:
     metadata:
       labels:
-        run: web
+        run: dev-web
     spec:
       containers:
       - image: gcr.io/google-samples/hello-app:1.0
         imagePullPolicy: IfNotPresent
-        name: web
+        name: dev-web
         ports:
         - containerPort: 8080
           protocol: TCP
