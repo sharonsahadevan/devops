@@ -2,10 +2,10 @@
 #   required_version = "~> 0.12.12"
 # }
 
-provider "aws" {
-  region  = "eu-central-1"
-  profile = "dt"
-}
+# provider "aws" {
+#   region  = "eu-central-1"
+#   profile = "dt"
+# }
 
 module "iam" {
   source = "./modules/iam"
@@ -28,11 +28,12 @@ module "emr" {
 
   # EMR cluster
   enable_emr_cluster        = true
-  emr_cluster_name          = "emr_testing_cluster"
+  emr_cluster_name          = "dil_dev_emr"
   emr_cluster_release_label = "emr-5.32.0"
   emr_cluster_service_role  = module.iam.emr_service_role
 
-  emr_cluster_applications = ["Spark", "Presto", "Spark"]
+  #emr_cluster_applications = ["Spark", "Presto", "Spark"]
+  emr_cluster_applications = ["Spark", "ZooKeeper", "Hive", "Hadoop", "HBase"]
   #emr_cluster_additional_info                   = file("./additional_files/emr-cluster-additional_info.json")
   emr_cluster_termination_protection            = false
   emr_cluster_keep_job_flow_alive_when_no_steps = true
@@ -50,6 +51,7 @@ module "emr" {
     # If you want to use private subnet:
 
     subnet_id                         = module.vpc.private_subnets[0]
+    key_name                          = var.emr_key_name
     instance_profile                  = module.iam.emr_ec2_instance_profile
     emr_managed_master_security_group = aws_security_group.emr_master.id
     emr_managed_slave_security_group  = aws_security_group.emr_slave.id
@@ -58,7 +60,7 @@ module "emr" {
   }]
 
   emr_cluster_master_instance_group_ebs_config = [{
-    instance_type  = "m4.large"
+    instance_type  = "m5.xlarge"
     instance_count = 1
 
     ebs_config_size                 = 10
@@ -76,8 +78,6 @@ module "emr" {
     ebs_config_type                 = "gp2"
     ebs_config_volumes_per_instance = 1
   }]
-
-
 
 
 

@@ -1,5 +1,5 @@
 resource "aws_security_group" "emr_master" {
-  name                   = "emr-master-sg"
+  name                   = "dil-emr-master-sg"
   description            = "Security group for EMR master."
   vpc_id                 = module.vpc.vpc_id
   revoke_rules_on_delete = true
@@ -45,7 +45,7 @@ resource "aws_security_group" "emr_master" {
 }
 
 resource "aws_security_group" "emr_slave" {
-  name                   = "emr-slave-sg"
+  name                   = "dil-emr-slave-sg"
   description            = "Security group for EMR slave."
   vpc_id                 = module.vpc.vpc_id
   revoke_rules_on_delete = true
@@ -70,7 +70,7 @@ resource "aws_security_group" "emr_slave" {
 }
 
 resource "aws_security_group" "emr_service_access_security_group" {
-  name                   = "emr-service-access-sg"
+  name                   = "dil-emr-service-access-sg"
   description            = "Security group for EMR slave."
   vpc_id                 = module.vpc.vpc_id
   revoke_rules_on_delete = true

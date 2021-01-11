@@ -77,3 +77,14 @@ variable "profile" {
   default = "dt"
 
 }
+
+
+#####################################
+# EMR
+#####################################
+
+variable "emr_key_name" {
+  type    = string
+  default = "dil-dev-emr-pair"
+
+}
