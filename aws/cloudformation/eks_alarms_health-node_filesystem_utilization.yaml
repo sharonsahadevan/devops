@@ -1,0 +1,52 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Parameters:
+  ClusterName:
+    Type: String
+    Default: ${ClusterName}
+  NodeName:
+    Type: String
+    Default: ${NodeName}
+  InstanceId:
+    Type: String
+    Default: ${InstanceId}
+  SNSTopicARN:
+    Type: String
+  Threshold:
+    Type: Number
+    Default: 80
+Resources:
+  SpikeNodeFilesystemUtilization:
+    Type: "AWS::CloudWatch::Alarm"
+    Properties:
+      AlarmActions:
+        - !Ref SNSTopicARN
+      AlarmDescription:
+        !Join [
+          "",
+          [
+            "Alarm by EKS cluster that reports Node File system Utilization Spike ",
+            !Ref Threshold,
+            "%",
+          ],
+        ]
+      AlarmName:
+        !Join ["", ["SpikeNodeFilesystemUtilization-", !Ref ClusterName]]
+      ComparisonOperator: GreaterThanThreshold
+      DatapointsToAlarm: 3
+      Dimensions:
+        - Name: ClusterName
+          Value: !Ref ClusterName
+        - Name: NodeName
+          Value: !Ref NodeName
+        - Name: InstanceId
+          Value: !Ref InstanceId
+      EvaluationPeriods: 5
+      MetricName: node_filesystem_utilization
+      Namespace: ContainerInsights
+      Period: 60
+      Statistic: Minimum
+      Threshold: !Ref Threshold
+      TreatMissingData: breaching
+    Metadata:
+      "AWS::EKS::Monitoring":
+        recommendationId: "eks:alarms:node_filesystem_utilization:2021-24-01"

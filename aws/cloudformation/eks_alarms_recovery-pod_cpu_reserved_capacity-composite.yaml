@@ -1,0 +1,149 @@
+Parameters:
+  ClusterName:
+    Type: String
+    Default: ${ClusterName}
+
+Resources:
+  PodCreationCapacity:
+    Type: AWS::CloudWatch::CompositeAlarm
+    Properties:
+      AlarmName: PodCreationCapacity
+      AlarmRule: (ALARM(PodCpuReservedCapacity) OR ALARM(PodMemoryReservedCapacity))
+      AlarmActions: [arn:aws:sns:us-east-1:289714961096:eks-recovery-alarm]
+      AlarmDescription: Indicate Pod creation capacity is running low
+    DependsOn:
+      - PodMemoryReservedCapacity
+      - PodMemoryReservedCapacity
+  PodCpuReservedCapacity:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmDescription: CPU usage is high
+      AlarmName: PodCpuReservedCapacity
+      ComparisonOperator: LessThanThreshold
+      EvaluationPeriods: 1
+      Metrics:
+        - Expression: IF(x1 < 100 - x2 / (x3 * x4), 1, 0)
+          Id: prc
+          Period: 60
+          ReturnData: True
+
+        - Id: x1
+          MetricStat:
+            Metric:
+              Dimensions:
+                - Name: ClusterName
+                  Value: !Ref ClusterName
+              MetricName: pod_cpu_reserved_capacity
+              Namespace: ContainerInsights
+            Period: 60
+            Stat: Minimum
+          ReturnData: False
+
+        - Id: x2
+          MetricStat:
+            Metric:
+              Dimensions:
+                - Name: ClusterName
+                  Value: !Ref ClusterName
+              MetricName: node_cpu_usage_total
+              Namespace: ContainerInsights
+            Period: 60
+            Stat: Minimum
+          ReturnData: False
+
+        - Id: x3
+          MetricStat:
+            Metric:
+              Dimensions:
+                - Name: ClusterName
+                  Value: !Ref ClusterName
+              MetricName: node_cpu_limit
+              Namespace: ContainerInsights
+            Period: 60
+            Stat: Minimum
+          ReturnData: False
+
+        - Id: x4
+          MetricStat:
+            Metric:
+              Dimensions:
+                - Name: ClusterName
+                  Value: !Ref ClusterName
+              MetricName: cluster_node_count
+              Namespace: ContainerInsights
+            Period: 60
+            Stat: Minimum
+          ReturnData: False
+
+      Threshold: 1
+      TreatMissingData: breaching
+  PodMemoryReservedCapacity:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmDescription: Memory usage is high
+      AlarmName: PodMemoryReservedCapacity
+      ComparisonOperator: LessThanThreshold
+      EvaluationPeriods: 1
+      Metrics:
+        - Expression: IF(m1 < 100 - m2 / (m3 * m4), 1, 0)
+          Id: prc
+          Period: 60
+          ReturnData: True
+
+        - Id: m1
+          MetricStat:
+            Metric:
+              Dimensions:
+                - Name: ClusterName
+                  Value: !Ref ClusterName
+              MetricName: pod_memory_reserved_capacity
+              Namespace: ContainerInsights
+            Period: 60
+            Stat: Minimum
+          ReturnData: False
+
+        - Id: m2
+          MetricStat:
+            Metric:
+              Dimensions:
+                - Name: ClusterName
+                  Value: !Ref ClusterName
+              MetricName: node_memory_usage_total
+              Namespace: ContainerInsights
+            Period: 60
+            Stat: Minimum
+          ReturnData: False
+
+        - Id: m3
+          MetricStat:
+            Metric:
+              Dimensions:
+                - Name: ClusterName
+                  Value: !Ref ClusterName
+              MetricName: node_memory_limit
+              Namespace: ContainerInsights
+            Period: 60
+            Stat: Minimum
+          ReturnData: False
+
+        - Id: m4
+          MetricStat:
+            Metric:
+              Dimensions:
+                - Name: ClusterName
+                  Value: !Ref ClusterName
+              MetricName: cluster_node_count
+              Namespace: ContainerInsights
+            Period: 60
+            Stat: Minimum
+          ReturnData: False
+
+      #MetricName: pod_memory_reserved_capacity
+      #Namespace: ContainerInsights
+      #Dimensions:
+      # - Name: ClusterName
+      #    Value: !Ref ClusterName
+      #Period: 60
+      #Statistic: Minimum
+      Threshold: 1
+      TreatMissingData: breaching

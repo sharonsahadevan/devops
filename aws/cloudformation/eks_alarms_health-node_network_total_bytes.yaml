@@ -1,0 +1,47 @@
+Parameters:
+  ClusterName:
+    Type: String
+  NodeName:
+    Type: String
+  InstanceId:
+    Type: String
+  SNSTopicARN:
+    Type: String
+
+Resources:
+  SpikeNetworkTotalBytesAnomalyDetector:
+    Type: AWS::CloudWatch::AnomalyDetector
+    Properties:
+      MetricName: Invocations
+      Namespace: ContainerInsights
+      Stat: Minimum
+
+  SpikeNetworkTotalBytes:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmDescription: Node Total Network Bytes Spike
+      AlarmName: SpikeNetworkTotalBytes
+      AlarmActions:
+        - !Ref SNSTopicARN
+      ComparisonOperator: LessThanLowerOrGreaterThanUpperThreshold
+      EvaluationPeriods: 1
+      Metrics:
+        - Expression: ANOMALY_DETECTION_BAND(m1, 2)
+          Id: ad1
+          Period: 60
+        - Id: m1
+          MetricStat:
+            Metric:
+              Dimensions:
+                - Name: ClusterName
+                  Value: !Ref ClusterName
+                - Name: NodeName
+                  Value: !Ref NodeName
+                - Name: InstanceId
+                  Value: !Ref InstanceId
+              MetricName: node_network_total_bytes
+              Namespace: ContainerInsights
+            Period: 60
+            Stat: Minimum
+      ThresholdMetricId: ad1
+      TreatMissingData: breaching

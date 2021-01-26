@@ -1,0 +1,49 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Parameters:
+  ClusterName:
+    Type: String
+    Default: ${ClusterName}
+  PodName:
+    Type: String
+  Namespace:
+    Type: String
+  SNSTopicARN:
+    Type: String
+  Threshold:
+    Type: Number
+    Default: 2
+Resources:
+  NumberOfContainerRestarts:
+    Type: "AWS::CloudWatch::Alarm"
+    Properties:
+      AlarmActions:
+        - !Ref SNSTopicARN
+      AlarmDescription:
+        !Join [
+          "",
+          [
+            "Alarm by EKS cluster that reports Number of Container restarts ",
+            !Ref Threshold,
+            "%",
+          ],
+        ]
+      AlarmName: !Join ["", ["NumberOfContainerRestarts-", !Ref ClusterName]]
+      ComparisonOperator: GreaterThanThreshold
+      Dimensions:
+        - Name: ClusterName
+          Value: !Ref ClusterName
+        - Name: PodName
+          Value: !Ref PodName
+        - Name: Namespace
+          Value: !Ref Namespace
+      DatapointsToAlarm: 1
+      EvaluationPeriods: 1
+      MetricName: pod_number_of_container_restarts
+      Namespace: ContainerInsights
+      Period: 60
+      Statistic: Maximum
+      Threshold: !Ref Threshold
+      TreatMissingData: missing
+    Metadata:
+      "AWS::EKS::Monitoring":
+        recommendationId: "eks:alarms:health-number_of_container_restarts:2021-24-01"

@@ -1,0 +1,51 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Parameters:
+  ClusterName:
+    Type: String
+    Default: ${ClusterName}
+  NodeName:
+    Type: String
+    Default: ${NodeName}
+  InstanceId:
+    Type: String
+    Default: ${InstanceId}
+  SNSTopicARN:
+    Type: String
+  Threshold:
+    Type: Number
+    Default: 90
+Resources:
+  SpikeNodeCpuUtilization:
+    Type: "AWS::CloudWatch::Alarm"
+    Properties:
+      AlarmActions:
+        - !Ref SNSTopicARN
+      AlarmDescription:
+        !Join [
+          "",
+          [
+            "Alarm by EKS cluster that reports higher CPU Utilization ",
+            !Ref Threshold,
+            "%",
+          ],
+        ]
+      AlarmName: !Join ["", ["SpikeNodeCpuUtilization-", !Ref ClusterName]]
+      ComparisonOperator: GreaterThanThreshold
+      DatapointsToAlarm: 3
+      Dimensions:
+        - Name: ClusterName
+          Value: !Ref ClusterName
+        - Name: NodeName
+          Value: !Ref NodeName
+        - Name: InstanceId
+          Value: !Ref InstanceId
+      EvaluationPeriods: 5
+      MetricName: cluster_failed_node_count
+      Namespace: ContainerInsights
+      Period: 60
+      Statistic: Minimum
+      Threshold: !Ref Threshold
+      TreatMissingData: breaching
+    Metadata:
+      "AWS::EKS::Monitoring":
+        recommendationId: "eks:alarms:failed-node-count:2021-24-01"
