@@ -22,7 +22,7 @@ module "vpc" {
   enable_nat_gateway   = true
   single_nat_gateway   = true
   enable_dns_hostnames = true
-  enable_s3_endpoint   = true
+  #enable_s3_endpoint   = true
 
   tags = {
     "kubernetes.io/cluster/${local.cluster_name}" = "shared"

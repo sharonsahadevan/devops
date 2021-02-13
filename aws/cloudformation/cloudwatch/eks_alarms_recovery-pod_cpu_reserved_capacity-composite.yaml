@@ -137,13 +137,5 @@ Resources:
             Period: 60
             Stat: Minimum
           ReturnData: False
-
-      #MetricName: pod_memory_reserved_capacity
-      #Namespace: ContainerInsights
-      #Dimensions:
-      # - Name: ClusterName
-      #    Value: !Ref ClusterName
-      #Period: 60
-      #Statistic: Minimum
       Threshold: 1
       TreatMissingData: breaching

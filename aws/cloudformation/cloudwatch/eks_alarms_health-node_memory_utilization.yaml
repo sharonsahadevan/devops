@@ -36,11 +36,11 @@ Resources:
         - Name: ClusterName
           Value: !Ref ClusterName
         - Name: NodeName
-          Value: !Ref Node
+          Value: !Ref NodeName
         - Name: InstanceId
           Value: !Ref InstanceId
       EvaluationPeriods: 5
-      MetricName: cluster_failed_node_count
+      MetricName: node_memory_utilization
       Namespace: ContainerInsights
       Period: 60
       Statistic: Minimum
